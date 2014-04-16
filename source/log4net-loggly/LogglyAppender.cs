@@ -1,4 +1,5 @@
-﻿using log4net.Appender;
+﻿using System.Threading;
+using log4net.Appender;
 using log4net.Core;
 
 namespace log4net.loggly
@@ -19,8 +20,13 @@ namespace log4net.loggly
 
 		protected override void Append(LoggingEvent loggingEvent)
 		{
-			Formatter.AppendAdditionalLoggingInformation(Config, loggingEvent);
-			Client.Send(Config, Config.InputKey, Formatter.ToJson(loggingEvent));
+		    ThreadPool.QueueUserWorkItem(x =>
+		    {
+		        Formatter.AppendAdditionalLoggingInformation(Config, loggingEvent);
+		        Client.Send(Config, Config.InputKey, Formatter.ToJson(loggingEvent));
+		    });
 		}
+
+        
 	}
 }

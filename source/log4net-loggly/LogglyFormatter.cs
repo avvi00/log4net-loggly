@@ -37,17 +37,20 @@ namespace log4net.loggly
             {
                 exceptionString = null; //ensure empty strings aren't included in the json output.
             }
-            return new
+            
+            var result = new
             {
                 level = loggingEvent.Level.DisplayName,
                 time = loggingEvent.TimeStamp.ToString("yyyyMMdd HHmmss.fff zzz"),
                 machine = Environment.MachineName,
                 process = _currentProcess.ProcessName,
                 thread = loggingEvent.ThreadName,
-                message = loggingEvent.MessageObject,
+                message = loggingEvent.MessageObject.ToString(),
                 loggerName = loggingEvent.LoggerName,
                 ex = exceptionString,
             };
+
+            return result;
         }
     }
 }
