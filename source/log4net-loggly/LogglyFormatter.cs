@@ -47,6 +47,7 @@ namespace log4net.loggly
                 thread = loggingEvent.ThreadName,
                 message = loggingEvent.MessageObject.ToString(),
                 loggerName = loggingEvent.LoggerName,
+                pid = GlobalContext.Properties["pid"],
                 ex = exceptionString,
             };
 

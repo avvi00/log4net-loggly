@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using log4net.Appender;
 using log4net.Core;
 
@@ -22,8 +24,19 @@ namespace log4net.loggly
 		{
 		    ThreadPool.QueueUserWorkItem(x =>
 		    {
-		        Formatter.AppendAdditionalLoggingInformation(Config, loggingEvent);
-		        Client.Send(Config, Config.InputKey, Formatter.ToJson(loggingEvent));
+		        try
+		        {
+		            Formatter.AppendAdditionalLoggingInformation(Config, loggingEvent);
+		            Client.Send(Config, Config.InputKey, Formatter.ToJson(loggingEvent));
+		        }
+		        catch (Exception ex)
+		        {
+                    Console.Out.WriteLine(ex.ToString());
+#if DEBUG 
+                    Debug.WriteLine("loggly-log4net error \r\n:" + ex.ToString());
+#endif
+                    Trace.WriteLine("loggly-log4net error \r\n:" + ex.ToString());
+		        }
 		    });
 		}
 
